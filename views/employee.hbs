@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>DBMS</title>
+    <link href="css/style.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.1/semantic.min.css">
+	<link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/dataTables.semanticui.min.css">
+	<link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.semanticui.min.css">
+	<link rel="stylesheet" href="https://cdn.datatables.net/select/1.3.3/css/select.semanticui.min.css">
+	<link rel="stylesheet" href="https://cdn.datatables.net/datetime/1.1.0/css/dataTables.dateTime.min.css">
+	<script src="js/app.js"></script>
+	<script src="https://code.jquery.com/jquery-3.1.0.js"></script>
+</head>
+<body>
+	<div class="ui four item menu">
+		<a class="item" href="/employee">員工管理</a>
+		<a class="item" href="/client">客戶</a>
+		<a class="item">廠商</a>
+		<a class="item">訂單</a>		
+	</div>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<div class="ui grid centered">
+		<div class="fourteen wide column">
+			<div class="ui search">
+				<select class="ui dropdown" name="employeeDetail" style="width: 10%;">
+					<option value="COUNT">員工人數</option>
+					<option value="AVG">平均薪資</option>
+					<option value="NAX">最高薪資</option>
+					<option value="MIN">最低薪資</option>
+				</select>
+				<div class="ui icon button" id="search">
+					<i class="search icon"></i>
+				</div>
+				<div class="results"></div>
+			</div>
+			<table class="ui very compact table">
+				<thead>
+					<tr>
+						<th></th>
+						<th>姓名</th>
+						<th>手機</th>
+						<th>電子郵件</th>
+						<th>生日</th>
+						<th>薪資</th>
+						<th>部門</th>
+					</tr>
+				</thead>
+				<tbody>
+                    {{#each data}}
+                        <tr class="row_{{EID}}">
+                            <td>
+                                {{!-- <i class="trash alternate icon" deleteEID="{{EID}}"></i> --}}
+                                <i class="edit icon" editEID="{{EID}}"></i>
+                            </td>
+                            <td>{{EName}}</td>
+                            <td>{{Phone}}</td>
+                            <td>{{Email}}</td>
+                            <td>{{Bdate}}</td>
+                            <td>{{Salary}}</td>
+                            <td>{{DName}}</td>
+                        </tr>
+                    {{/each}}    
+									
+				</tbody>
+			</table>
+			<div class="ui button" id="new" style="float: right; width: 8%;">新增</div>  	
+			<div class="ui button" style="float: right; width: 10%;">薪資分布</div>  		
+			<div id="hide"></div>
+		</div>
+		<div class="center aligned centered grid">
+			<form class="ui form" method="POST" action="/submit-Employee-Form">
+				<div class="field">
+					<i class="x icon" style="float: right;"></i>
+				</div>
+				<div class="field">
+					<label>姓名</label>
+					<input type="text" name="name" placeholder="真實姓名">
+				</div>
+				<div class="field">
+					<label>手機號碼</label>
+					<input type="text" name="phone" placeholder="987654321">
+				</div>
+				<div class="field">
+					<label>電子郵件</label>
+					<input type="text" name="email" placeholder="xxx@gmail.com">
+				</div>
+				<div class="field">
+					<label>生日</label>
+					<input type="date" name="birthday">
+					<!-- <textarea rows="4"></textarea> -->
+				</div>
+				<div class="field">
+					<label>薪水</label>
+					<input type="number" name="salary" placeholder="45000">
+				</div>
+				<div class="field">
+					<label>部門</label>
+                    <select class="ui dropdown" name="department">
+                        <option value="1">業務部</option>
+                        <option value="2">客服部</option>
+                        <option value="3">採購部</option>
+                        <option value="4">人事部</option>
+                        <option value="5">財務部</option>
+                    </select>
+				</div>								
+				<button class="ui button primary" type="submit">Submit</button>
+                <input type="hidden" name="query_cond" value="insert">
+			</form>
+		</div>		
+	</div>
+	
+	
+	
+</body>
+<script>
+    $(document).ready(function(){	
+		$('body').on('click', '.edit', function(){
+			popForm()
+            let EID = $(this).attr('editEID')
+            $('input[name=name]').val($(`.row_${EID} td:nth-child(2)`).html())
+            $('input[name=phone]').val($(`.row_${EID} td:nth-child(3)`).html())
+            $('input[name=email]').val($(`.row_${EID} td:nth-child(4)`).html())
+            $('input[name=birthday]').val($(`.row_${EID} td:nth-child(5)`).html())
+            $('input[name=salary]').val($(`.row_${EID} td:nth-child(6)`).html())
+            $('input[name=department]').val($(`.row_${EID} td:nth-child(7)`).html())
+            $('input[name=query_cond]').val(EID)                     	
+		})
+/*
+		$('body').on('click', '.trash', function(){
+			alert('您確定要刪除這筆資料?')
+            let EID = $(this).attr('deleteEID')
+            $.ajax({
+                url: 'delete-Employee',
+                data: {
+                    EID: EID
+                },
+                success: function (data){
+                    $(`.row_${EID}`).remove()
+                }
+            })                
+		})
+*/
+
+        $('body').on('click', '#new', function(){
+            popForm()
+        })
+
+        $('body').on('click', '.x', function(){
+            cancel()
+            $('input[name=name]').val('')
+            $('input[name=phone]').val('')
+            $('input[name=email]').val('')
+            $('input[name=birthday]').val('')
+            $('input[name=salary]').val('')
+            $('input[name=query_cond]').val('insert')
+            $('select[name=department]').val('1')                 
+        })
+
+		$('body').on('click', '#search', function(){
+			if($('select[name=employeeDetail]').val('MIN')){
+				console.log('MIN')
+			}else if($('select[name=employeeDetail]').val('MAX')){
+				console.log('MAX')
+			}else{
+				console.log('fuck')
+			}
+		})
+	})
+</script>
+</html>

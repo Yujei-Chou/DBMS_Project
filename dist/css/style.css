@@ -1,0 +1,45 @@
+.menu{
+    background-color: #F8F8F8;
+    height: 8vh;	
+}
+
+a.item{
+    font-size: large;
+    font-weight: bold;
+}
+
+label{
+    float: left;
+}
+tr{
+    height: 8vh;
+}
+tr:hover{
+    background-color:#F8F8F8;
+}
+i:hover{
+    cursor: pointer;
+}
+form {
+    padding: 20px;
+    background-color:#FFFFFF;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 400px;
+    display: none;
+    z-index: 2;
+}
+button {
+    width: 100%
+}
+#hide{
+    top:0;
+    left:0;
+    width:100vw;
+    height:100vh;		
+    position:fixed;
+    background-color:#3c3c3c;
+    opacity:70%;
+    z-index:1;
+    display:none;  
+}
