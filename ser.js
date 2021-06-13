@@ -43,6 +43,13 @@ app.get('/client', (req, res) => {
   })  
 })
 
+app.get('/order', (req, res) => {
+  connection.query(`SELECT Orders.OID, CurrentStatus, DATE_FORMAT(OrderDate, "%Y-%m-%d") AS OrderDate, Client.Name AS PlaceClient, SUM(SalePrice*Amount) AS Total FROM Orders, Client, Have, Product WHERE Orders.PlaceCID=Client.CID AND Orders.OID=Have.OID AND Have.PID=Product.PID GROUP BY Orders.OID`, (err, result) => {
+    if (err) console.log('fail to select:', err)
+    res.render('order', {data: result})    
+  })
+})
+
 
 //action
 app.get('/delete-Employee', (req, res) => {
@@ -61,8 +68,47 @@ app.post('/submit-Employee-Form', (req, res) => {
     })      
   }else{
     connection.query(`UPDATE Employee SET Name='${req.body.name}', Phone='${req.body.phone}', Email='${req.body.email}', Bdate='${req.body.birthday}', Salary=${req.body.salary}, DNUM=${req.body.department} WHERE EID=${req.body.query_cond}`, (err, result) =>{
-      if (err) console.log('insert:', err)
+      if (err) console.log('update:', err)
       res.redirect('employee')
     })          
   }
+})
+
+app.get('/search-employee-Detail', (req, res) => {
+  let data = {}
+  if(req.query.search_cond == 'COUNT'){
+    connection.query(`SELECT COUNT(Name) AS cnt FROM Employee`, (err, result) =>{
+      if (err) console.log('select:', err)
+      data.optionID = 1
+      data.res = `員工人數:${result[0].cnt}人`
+      res.send(data)
+    })     
+  }
+
+  if(req.query.search_cond == 'AVG'){
+    connection.query(`SELECT AVG(Salary) AS AVG FROM Employee`, (err, result) =>{
+      if (err) console.log('select:', err)
+      data.optionID = 2
+      data.res = `平均薪資:${result[0].AVG}元`
+      res.send(data)
+    })     
+  }
+
+  if(req.query.search_cond == 'MAX'){
+    connection.query(`SELECT MAX(Salary) AS MAX FROM Employee`, (err, result) =>{
+      if (err) console.log('select:', err)
+      data.optionID = 3
+      data.res = `最高薪資:${result[0].MAX}元`
+      res.send(data)
+    })     
+  }
+
+  if(req.query.search_cond == 'MIN'){
+    connection.query(`SELECT MIN(Salary) AS MIN FROM Employee`, (err, result) =>{
+      if (err) console.log('select:', err)
+      data.optionID = 4
+      data.res = `最低薪資:${result[0].MIN}人`
+      res.send(data)
+    })     
+  }  
 })
