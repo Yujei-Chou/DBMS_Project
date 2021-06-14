@@ -27,33 +27,30 @@
 	<br>
 	<br>
 	<div class="ui grid centered">
+        <div class="ui stackable secondary menu">   
+            <form class="item" method="POST" action="/get-supplier-inTainan">
+                <button class="ui button">位於台南的廠商</button>
+            </form>
+            <form class="item" method="POST" action="/get-supplier-notInTainan">
+                <button class="ui button">其他地區的廠商</button>
+            </form>
+        </div>            
 		<div class="fourteen wide column">
-			<div class="ui search">
-				<div class="ui input">
-				  <input type="text" placeholder="Search Name...">
-				</div>
-				<div class="ui icon button">
-					<i class="search icon"></i>
-				</div>
-				<div class="results"></div>
-			</div>
 			<table class="ui very compact table">
 				<thead>
 					<tr>
 						<th></th>
-						<th>姓名</th>
-						<th>手機</th>
-						<th>住址</th>
+						<th>公司名稱</th>
+						<th>地址</th>
 					</tr>
 				</thead>
 				<tbody>
                     {{#each data}}
-                        <tr class="row_{{CID}}">
+                        <tr class="row_{{SID}}">
                             <td>
-                                <i class="edit icon" editCID="{{CID}}"></i>
+                                <i class="edit icon" editSID="{{SID}}"></i>
                             </td>
                             <td>{{Name}}</td>
-                            <td>{{Phone}}</td>
                             <td>{{Address}}</td>
                         </tr>
                     {{/each}}    
@@ -62,25 +59,22 @@
 			</table>	
 			<div id="hide"></div>
 		</div>
-		<form class="ui form" id="Cform">
+		<form class="ui form" id="Sform">
 			<div class="field">
 				<i class="x icon" style="float: right;"></i>
 			</div>
 			<div class="field">
-				<label>姓名</label>
-				<input type="text" name="name" placeholder="真實姓名">
+				<label>公司名稱</label>
+				<input type="text" name="name">
 			</div>
 			<div class="field">
-				<label>手機號碼</label>
-				<input type="text" name="phone" placeholder="987654321">
+				<label>地址</label>
+				<input type="text" name="address">
 			</div>
-			<div class="field">
-				<label>住址</label>
-				<input type="text" name="address" placeholder="台南市東區青年路297號2樓">
-			</div>							
 			<button class="ui button primary" type="submit">Submit</button>
 			<input type="hidden" name="query_cond" value="insert">
-		</form>		
+		</form>		                          
+
 	</div>
 	
 	
@@ -89,23 +83,21 @@
 <script>
     $(document).ready(function(){	
 		$('body').on('click', '.edit', function(){
-			popForm('#Cform')
-            let CID = $(this).attr('editCID')
-            $('input[name=name]').val($(`.row_${CID} td:nth-child(2)`).html())
-            $('input[name=phone]').val($(`.row_${CID} td:nth-child(3)`).html())
-            $('input[name=address]').val($(`.row_${CID} td:nth-child(4)`).html())
-            $('input[name=query_cond]').val(CID)                     	
+			popForm('#Sform')
+            let SID = $(this).attr('editSID')
+            $('input[name=name]').val($(`.row_${SID} td:nth-child(2)`).html())
+            $('input[name=address]').val($(`.row_${SID} td:nth-child(3)`).html())
+            $('input[name=query_cond]').val(SID)                  	
 		})
 
-
+/*
         $('body').on('click', '#new', function(){
-            popForm('#Cform')
+            popForm('#Sform')
         })
-
+*/
         $('body').on('click', '.x', function(){
-            cancel('#Cform')
+            cancel('#Sform')
             $('input[name=name]').val('')
-            $('input[name=phone]').val('')
             $('input[name=address]').val('')
             $('input[name=query_cond]').val('insert')    			
         })        

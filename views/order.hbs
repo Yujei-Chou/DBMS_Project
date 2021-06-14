@@ -18,7 +18,7 @@
 	<div class="ui four item menu">
 		<a class="item" href="/employee">員工管理</a>
 		<a class="item" href="/client">客戶</a>
-		<a class="item">廠商</a>
+		<a class="item" href="/supplier">廠商</a>
 		<a class="item" href="/order">訂單</a>	
 	</div>
 	<br>
@@ -27,16 +27,15 @@
 	<br>
 	<br>
 	<div class="ui grid centered">
-		<div class="fourteen wide column">
-			<div class="ui search">
-				<div class="ui input">
-				  <input type="text" placeholder="Search Name...">
-				</div>
-				<div class="ui icon button">
-					<i class="search icon"></i>
-				</div>
-				<div class="results"></div>
-			</div>
+        <div class="ui stackable secondary menu">   
+            <form class="item" method="POST" action="/get-employee-orderUnfinish">
+                <button class="ui button">仍有未出貨訂單的業務部員工</button>
+            </form>
+            <form class="item" method="POST" action="/get-employee-orderfinish">
+                <button class="ui button">已處理好所有訂單的業務部員工</button>
+            </form>
+        </div>            		
+		<div class="fourteen wide column" id="table">
 			<table class="ui very compact table">
 				<thead>
 					<tr>
@@ -49,19 +48,16 @@
 					</tr>
 				</thead>
 				<tbody>
-                    {{#each data}}
+                    {{#each data.Order}}
                         <tr class="row_{{OID}}">
                             <td>
-								{{!-- {{#if (eq CurrentStatus "未出貨")}}
-									<i class="trash alternate icon" editOID="{{OID}}"></i>
-								{{/if}} --}}
-                                <i class="edit icon" editOID="{{OID}}"></i>
+                                <i class="edit icon" editOID="{{OID}}" receiveEID="{{ReceiveEID}}" confirmEID="{{ConfirmEID}}"></i>
                             </td>
-                            <td><a href="/order/{{OID}}">{{OID}}</a></td>
+                            <td>{{OID}}</td>
                             <td>{{CurrentStatus}}</td>
                             <td>{{OrderDate}}</td>
                             <td>{{Total}}元</td>
-                            <td>{{PlaceClient}}</td>
+                            <td address="{{Address}}" phone="{{Phone}}">{{PlaceClient}}</td>
                         </tr>
                     {{/each}}    
 									
@@ -70,48 +66,73 @@
 			<div class="ui button" id="new" style="float: right; width: 10%;">新增</div> 	
 			<div id="hide"></div>
 		</div>
-		<div class="center aligned centered grid">
-			<form class="ui form">
-				<div class="field">
-					<i class="x icon" style="float: right;"></i>
-				</div>
-				<div class="field">
-					<label>訂單編號</label>
-					<input type="text" name="OID" value="7">
-				</div>
-				<div class="field">
-					<label>狀態</label>
+        <form class="ui form" id="Oform">
+			<div class="field">
+				<i class="x icon" style="float: right;"></i>
+			</div>			
+            <div class="three fields">
+                <div class="field">
+                    <label>訂單編號</label>
+                    <input type="text" name="OID">
+                </div>
+                <div class="field">
+                    <label>狀態</label>
                     <select class="ui dropdown" name="status">
                         <option value="未出貨">未出貨</option>
                         <option value="已出貨">已出貨</option>
-                        <option value="取消訂單">取消訂單</option>
                     </select>                    
+                </div>	
+                <div class="field">
+                    <label>下訂日期</label>
+                    <input type="date" name="orderDate">
+                </div>
+            </div>
+            <div class="three fields">
+                <div class="field">
+                    <label>客戶姓名</label>
+                    <input type="text" name="name">
+                </div>
+				<div class="field">
+					<label>手機號碼</label>
+					<input type="text" name="phone">
 				</div>
 				<div class="field">
-					<label>總金額</label>
-					<input type="text" name="total">
-				</div>				
+					<label>住址</label>
+					<input type="text" name="address">
+				</div>               	                
+            </div>
+            <div class="three fields">
 				<div class="field">
-					<label>下訂日期</label>
-					<input type="text" name="orderDate">
+					<label>接單員工</label>
+                    <select class="ui dropdown" name="receive">
+					{{#each data.Receive}}	
+                        <option value="{{EID}}">{{Name}}</option>
+					{{/each}}	
+                    </select>    
 				</div>
 				<div class="field">
-					<label>客戶姓名</label>
-					<input type="text" name="name">
+					<label>出貨員工</label>
+                    <select class="ui dropdown" name="confirm">
+					{{#each data.Confirm}}	
+                        <option value="{{EID}}">{{Name}}</option>
+					{{/each}}	
+                    </select>    					
 				</div>
-				<div class="field">
-					<label>下定產品種類</label>
-					<div class="ui icon input">
-						<input type="number" name="kind" placeholder="選擇數量">
-						<i class="circular cart plus link icon"></i>
-					</div>
-				</div>				
-	            <div id="test"></div>       		                							
-				<button class="ui button primary" type="submit">Submit</button>
-                <input type="hidden" name="query_cond" value="insert">
-			</form>
-		</div>		
+                <div class="field">
+                    <label>下訂產品種類</label>
+                    <div class="ui icon input">
+                        <input type="number" name="kind" placeholder="選擇數量">
+                        <i class="circular cart plus link icon"></i>
+                    </div>
+                </div>                	                
+            </div>			
+            <div id="product_list"></div> 		                							
+            <button class="ui button primary" type="submit" style="float: right; width: 15%;" id="submit">確認</button>
+            <button class="ui button" type="submit" style="float: right; width: 15%;" id="delete">刪除</button>            
+            <input type="hidden" name="query_cond" value="insert">
+        </form>
 	</div>
+	
 	
 	
 	
@@ -119,71 +140,108 @@
 <script>
     $(document).ready(function(){	
 		$('body').on('click', '.edit', function(){
-			popForm()
-            let OID = $(this).attr('editOID')            
-            $('input').prop('disabled', true)
-            $('input[name=OID]').val(OID)
-            $('select[name=status]').val($(`.row_${OID} td:nth-child(3)`).html())
-            $('input[name=orderDate]').val($(`.row_${OID} td:nth-child(4)`).html())
-            $('input[name=total]').val($(`.row_${OID} td:nth-child(5)`).html())			
-            $('input[name=name]').val($(`.row_${OID} td:nth-child(6)`).html())
-            if($(`.row_${OID} td:nth-child(3)`).html() == '已出貨'){
-                $('select[name=status]').prop('disabled', true)
-            }                     	
+			let OID = $(this).attr('editOID')
+			$('#table').css('display', 'none')
+			$('#Oform').css('display', 'block')	
+			$('input[name=OID]').val(OID)
+			$('select[name=receive]').val($(this).attr('receiveEID'))
+			$('select[name=confirm]').val($(this).attr('confirmEID'))
+			$('select[name=status]').val($(`.row_${OID} td:nth-child(3)`).html())
+			$('input[name=orderDate]').val($(`.row_${OID} td:nth-child(4)`).html())		
+			$('input[name=name]').val($(`.row_${OID} td:nth-child(6)`).html())
+			$('input[name=phone]').val($(`.row_${OID} td:nth-child(6)`).attr('phone'))
+			$('input[name=address]').val($(`.row_${OID} td:nth-child(6)`).attr('address'))   
+			$.ajax({
+                url: 'get-order-Detail',
+                data: {
+                    OID: OID
+                },
+                success: function (data){
+					$('input[name=kind]').val(data.length)  
+					$('.plus').trigger('click')
+					let i = 1
+					$.each(data, function (key, value){
+						$(`#product_list div:nth-child(${i}) div select`).val(value.PID)
+						$(`#product_list div:nth-child(${i}) div input`).val(value.Amount)
+						i = i + 1
+					})
+					$('input').prop('disabled', true)
+					$('select').prop('disabled', true)
+					if($(`.row_${OID} td:nth-child(3)`).html() == '已出貨'){
+						$('.cart').prop('disabled', true)
+						$('button').prop('disabled', true)
+					}else{
+						$('select[name=status]').prop('disabled', false)
+						$('select[name=product]').prop('disabled', false)
+						$('select[name=confirm]').prop('disabled', false)
+						$('input[name=amount]').prop('disabled', false)
+						$('input[name=kind]').prop('disabled', false)
+					}	         					
+                }
+            })  			                        	
 		})
 
 
         $('body').on('click', '#new', function(){
-            popForm()
+			$('#table').css('display', 'none')
+			$('#Oform').css('display', 'block')
         })
 
-        $('body').on('click', '.x', function(){
-            cancel()
-            $('input').prop('disabled', false)
-            $('select[name=status]').prop('disabled', false)
-            $('input[name=OID]').val('')
-            $('select[name=status]').val('')
-            $('input[name=orderDate]').val('')
-            $('input[name=total]').val('')
-            $('input[name=name]').val('')
+        $('body').on('click', '#delete', function(){
+			let OID = $('input[name=OID]').val()
+            $.ajax({
+                url: 'delete-Order',
+                data: {
+                    OID: OID
+                },
+                success: function (data){
+					$(`.row_${OID}`).remove()
+                }
+            }) 			
+        })
 
+
+        $('body').on('click', '.x', function(){
+			$('#table').css('display', 'block')
+			$('#Oform').css('display', 'none')
+			clearOform()
         })
 
 		$('body').on('click', '.plus', function(){
-			alert($('input[name=kind]').val())
+			$('#product_list').empty()
 			for(let i=0; i<$('input[name=kind]').val(); i++){
-				$('#test').append(`<div class="two fields">
-									<div class="field">
-										<label>訂購產品名稱</label>
-										<select class="ui dropdown" name="product">
-											<option value="1">電視遊樂器</option>
-											<option value="2">電視遊樂器搖桿</option>
-											<option value="3">電腦外殼</option>
-											<option value="4">商用主機</option>
-											<option value="5">筆記型電腦</opt6ion>
-											<option value="6">鍵盤保護蓋</option>
-											<option value="7">無線寬頻分享器</option>
-											<option value="8">筆電電池</option>
-											<option value="9">掃描器</option>
-											<option value="10">主機板</option>
-											<option value="11">數位監控卡</option>
-											<option value="12">電源供應器</option>
-											<option value="13">網路攝影機</option>
-											<option value="14">網路線</option>
-											<option value="15">行動寶盒</option>
-											<option value="16">套裝軟體</option>
-											<option value="17">彩色液晶螢幕</option>
-											<option value="18">桌上型電腦</option>
-											<option value="19">記憶體</option>
-											<option value="20">固態硬碟</option>
-										
-										</select>
-									</div>
-									<div class="field">
-										<label>數量</label>
-										<input type="number" name="amount">
-									</div>                       
-								</div>`)
+				$('#product_list').append(`<div class="two fields">
+											<div class="field">
+												<label>訂購產品名稱</label>
+												<select class="ui dropdown" name="product">
+													<option value="1">電視遊樂器</option>
+													<option value="2">電視遊樂器搖桿</option>
+													<option value="3">電腦外殼</option>
+													<option value="4">商用主機</option>
+													<option value="5">筆記型電腦</opt6ion>
+													<option value="6">鍵盤保護蓋</option>
+													<option value="7">無線寬頻分享器</option>
+													<option value="8">筆電電池</option>
+													<option value="9">掃描器</option>
+													<option value="10">主機板</option>
+													<option value="11">數位監控卡</option>
+													<option value="12">電源供應器</option>
+													<option value="13">網路攝影機</option>
+													<option value="14">網路線</option>
+													<option value="15">行動寶盒</option>
+													<option value="16">套裝軟體</option>
+													<option value="17">彩色液晶螢幕</option>
+													<option value="18">桌上型電腦</option>
+													<option value="19">記憶體</option>
+													<option value="20">固態硬碟</option>
+												
+												</select>
+											</div>
+											<div class="field">
+												<label>數量</label>
+												<input type="number" name="amount">
+											</div>                       
+										</div>`)
 			}
 		})        
 	})

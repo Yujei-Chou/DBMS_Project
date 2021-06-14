@@ -20,7 +20,7 @@ tr:hover{
 i:hover{
     cursor: pointer;
 }
-form {
+#Eform, #Cform, #Sform{
     padding: 20px;
     background-color:#FFFFFF;
     border: 1px solid #ccc;
@@ -29,6 +29,17 @@ form {
     display: none;
     z-index: 2;
 }
+
+#Oform{
+    padding: 20px;
+    background-color:#FFFFFF;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 75%;
+    display: none;
+    z-index: 2;
+}
+
 button {
     width: 100%
 }
@@ -44,10 +55,3 @@ button {
     display:none;  
 }
 
-#order_detail_form{
-    padding: 20px;
-    background-color:#FFFFFF;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    width: 75%;
-}

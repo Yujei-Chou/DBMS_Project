@@ -2,28 +2,38 @@ var scrollDist;
 var myTop;
 var myLeft;
 
-function centerHandler(){
+function centerHandler(formID){
     scrollDist=$(window).scrollTop();
-    myTop=($(window).height()-$("form").height())/2+scrollDist;
-    myLeft=($(window).width()-$("form").width())/2;
+    myTop=($(window).height()-$(formID).height())/2+scrollDist;
+    myLeft=($(window).width()-$(formID).width())/2;
 }
-function cancel(){
+function cancel(formID){
     $('body').css('overflow','scroll')
-    $("form").animate({
+    $(formID).animate({
         opacity: '0',
     })
     $('#hide').css('display','none') 
-    $('form').css('display','none') 		
+    $(formID).css('display','none') 		
 }	
 
-function popForm(){
-    centerHandler()
+function popForm(formID){
+    centerHandler(formID)
     $('body').css('overflow','hidden')
     $('#hide').css('display','block')
-    $('form').css('display', 'block')
-    $('form').offset({top: myTop,left:myLeft})
-    $('form').animate({
+    $(formID).css('display', 'block')
+    $(formID).offset({top: myTop,left:myLeft})
+    $(formID).animate({
         opacity: '1',
     })	        
+}
+
+function clearOform(){
+    $('input').val('')
+    $('select').val('')
+    $('#product_list').empty()
+    $('input').prop('disabled', false)
+    $('select').prop('disabled', false)
+    $('.cart').prop('disabled', false)
+    $('button').prop('disabled', false)    
 }
 

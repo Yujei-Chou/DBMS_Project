@@ -18,7 +18,7 @@
 	<div class="ui four item menu">
 		<a class="item" href="/employee">員工管理</a>
 		<a class="item" href="/client">客戶</a>
-		<a class="item">廠商</a>
+		<a class="item" href="/supplier">廠商</a>
 		<a class="item" href="/order">訂單</a>		
 	</div>
 	<br>
@@ -28,18 +28,20 @@
 	<br>
 	<div class="ui grid centered">
 		<div class="fourteen wide column">
-			<div class="ui search">
-				<select class="ui dropdown" name="employeeDetail" style="width: 15%;">
-					<option value="COUNT">員工人數</option>
-					<option value="AVG">平均薪資</option>
-					<option value="MAX">最高薪資</option>
-					<option value="MIN">最低薪資</option>
-				</select>
-				<div class="ui icon button" id="search">
-					<i class="search icon"></i>
+			{{#if notQueryExist}}
+				<div class="ui search">
+					<select class="ui dropdown" name="employeeDetail" style="width: 15%;">
+						<option value="COUNT">員工人數</option>
+						<option value="AVG">平均薪資</option>
+						<option value="MAX">最高薪資</option>
+						<option value="MIN">最低薪資</option>
+					</select>
+					<div class="ui icon button" id="search">
+						<i class="search icon"></i>
+					</div>							
 				</div>
-			</div>
-			{{!-- <div class="result">25人</div> --}}
+				<div><h3></h3></div>
+			{{/if}}					
 			<table class="ui very compact table">
 				<thead>
 					<tr>
@@ -48,7 +50,7 @@
 						<th>手機</th>
 						<th>電子郵件</th>
 						<th>生日</th>
-						<th>薪資</th>
+						<th>薪資<i class="search icon" id="salarySearch"></i></th>
 						<th>部門</th>
 					</tr>
 				</thead>
@@ -70,48 +72,49 @@
 									
 				</tbody>
 			</table>
-			<div class="ui button" id="new" style="float: right; width: 10%;">新增</div>  		
+			{{#if notQueryExist}}
+				<div class="ui button" id="new" style="float: right; width: 10%;">新增</div>  		
+			{{/if}}
 			<div id="hide"></div>
 		</div>
-		<div class="center aligned centered grid">
-			<form class="ui form" method="POST" action="/submit-Employee-Form">
-				<div class="field">
-					<i class="x icon" style="float: right;"></i>
-				</div>
-				<div class="field">
-					<label>姓名</label>
-					<input type="text" name="name" placeholder="真實姓名">
-				</div>
-				<div class="field">
-					<label>手機號碼</label>
-					<input type="text" name="phone" placeholder="987654321">
-				</div>
-				<div class="field">
-					<label>電子郵件</label>
-					<input type="text" name="email" placeholder="xxx@gmail.com">
-				</div>
-				<div class="field">
-					<label>生日</label>
-					<input type="date" name="birthday">
-				</div>
-				<div class="field">
-					<label>薪水</label>
-					<input type="number" name="salary" placeholder="45000">
-				</div>
-				<div class="field">
-					<label>部門</label>
-                    <select class="ui dropdown" name="department">
-                        <option value="1">業務部</option>
-                        <option value="2">客服部</option>
-                        <option value="3">採購部</option>
-                        <option value="4">人事部</option>
-                        <option value="5">財務部</option>
-                    </select>
-				</div>								
-				<button class="ui button primary" type="submit">Submit</button>
-                <input type="hidden" name="query_cond" value="insert">
-			</form>
-		</div>		
+		<form class="ui form" id="Eform" method="POST" action="/submit-Employee-Form">
+			<div class="field">
+				<i class="x icon" style="float: right;"></i>
+			</div>
+			<div class="field">
+				<label>姓名</label>
+				<input type="text" name="name" placeholder="真實姓名">
+			</div>
+			<div class="field">
+				<label>手機號碼</label>
+				<input type="text" name="phone" placeholder="987654321">
+			</div>
+			<div class="field">
+				<label>電子郵件</label>
+				<input type="text" name="email" placeholder="xxx@gmail.com">
+			</div>
+			<div class="field">
+				<label>生日</label>
+				<input type="date" name="birthday">
+			</div>
+			<div class="field">
+				<label>薪水</label>
+				<input type="number" name="salary" placeholder="45000">
+			</div>
+			<div class="field">
+				<label>部門</label>
+				<select class="ui dropdown" name="department">
+					<option value="1">業務部</option>
+					<option value="2">客服部</option>
+					<option value="3">採購部</option>
+					<option value="4">人事部</option>
+					<option value="5">財務部</option>
+				</select>
+			</div>								
+			<button class="ui button primary" type="submit">Submit</button>
+			<input type="hidden" name="query_cond" value="insert">
+		</form>
+
 	</div>
 	
 	
@@ -120,7 +123,7 @@
 <script>
     $(document).ready(function(){	
 		$('body').on('click', '.edit', function(){
-			popForm()
+			popForm('#Eform')
             let EID = $(this).attr('editEID')
             $('input[name=name]').val($(`.row_${EID} td:nth-child(2)`).html())
             $('input[name=phone]').val($(`.row_${EID} td:nth-child(3)`).html())
@@ -132,11 +135,11 @@
 		})
 
         $('body').on('click', '#new', function(){
-            popForm()
+            popForm('#Eform')
         })
 
         $('body').on('click', '.x', function(){
-            cancel()
+            cancel('#Eform')
             $('input[name=name]').val('')
             $('input[name=phone]').val('')
             $('input[name=email]').val('')
@@ -158,21 +161,15 @@
             })    			
 		})
 
-/*
-		$('body').on('click', '.trash', function(){
-			alert('您確定要刪除這筆資料?')
-            let EID = $(this).attr('deleteEID')
+		$('body').on('click', '#salarySearch', function(){
             $.ajax({
-                url: 'delete-Employee',
-                data: {
-                    EID: EID
-                },
+                url: 'search-avg-Salary',
+                data: {},
                 success: function (data){
-                    $(`.row_${EID}`).remove()
+                    $('h3').html(`平均薪資大於50000的部門:${data}`)
                 }
-            })                
+            })
 		})
-*/		
 	})
 </script>
 </html>
