@@ -18,7 +18,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
 //connect to mysql
-/*
+
 const connection = mysql.createConnection(config.mysql)
 
 connection.connect(err => {
@@ -27,7 +27,7 @@ connection.connect(err => {
     process.exit()
   }
 
-})*/
+})
 
 //route
 app.get('/employee', (req, res) => {
