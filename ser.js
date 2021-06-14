@@ -18,6 +18,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
 //connect to mysql
+/*
 const connection = mysql.createConnection(config.mysql)
 
 connection.connect(err => {
@@ -26,7 +27,7 @@ connection.connect(err => {
     process.exit()
   }
 
-})
+})*/
 
 //route
 app.get('/employee', (req, res) => {
@@ -50,7 +51,9 @@ app.get('/order', (req, res) => {
   })
 })
 
-
+app.get('/order_detail', (req, res) => {
+  res.render('order_detail')
+})
 //action
 app.get('/delete-Employee', (req, res) => {
   console.log(req.query.EID)

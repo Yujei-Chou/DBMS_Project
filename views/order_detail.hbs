@@ -25,99 +25,62 @@
 	<br>
 	<br>
 	<br>
-	<br>
+	<br>    
 	<div class="ui grid centered">
-		<div class="fourteen wide column">
-			<div class="ui search">
-				<div class="ui input">
-				  <input type="text" placeholder="Search Name...">
-				</div>
-				<div class="ui icon button">
-					<i class="search icon"></i>
-				</div>
-				<div class="results"></div>
-			</div>
-			<table class="ui very compact table">
-				<thead>
-					<tr>
-						<th></th>
-						<th>訂單編號</th>
-						<th>狀態</th>
-						<th>下訂日期</th>
-                        <th>總金額</th>
- 						<th>客戶姓名</th>                       
-					</tr>
-				</thead>
-				<tbody>
-                    {{#each data}}
-                        <tr class="row_{{OID}}">
-                            <td>
-								{{!-- {{#if (eq CurrentStatus "未出貨")}}
-									<i class="trash alternate icon" editOID="{{OID}}"></i>
-								{{/if}} --}}
-                                <i class="edit icon" editOID="{{OID}}"></i>
-                            </td>
-                            <td><a href="/order/{{OID}}">{{OID}}</a></td>
-                            <td>{{CurrentStatus}}</td>
-                            <td>{{OrderDate}}</td>
-                            <td>{{Total}}元</td>
-                            <td>{{PlaceClient}}</td>
-                        </tr>
-                    {{/each}}    
-									
-				</tbody>
-			</table>
-			<div class="ui button" id="new" style="float: right; width: 10%;">新增</div> 	
-			<div id="hide"></div>
-		</div>
-		<div class="center aligned centered grid">
-			<form class="ui form">
-				<div class="field">
-					<i class="x icon" style="float: right;"></i>
-				</div>
-				<div class="field">
-					<label>訂單編號</label>
-					<input type="text" name="OID" value="7">
-				</div>
-				<div class="field">
-					<label>狀態</label>
+        <form class="ui form" id="order_detail_form">
+            <div class="four fields">
+                <div class="field">
+                    <label>訂單編號</label>
+                    <input type="text" name="OID" value="7">
+                </div>
+                <div class="field">
+                    <label>狀態</label>
                     <select class="ui dropdown" name="status">
                         <option value="未出貨">未出貨</option>
                         <option value="已出貨">已出貨</option>
-                        <option value="取消訂單">取消訂單</option>
                     </select>                    
+                </div>
+                <div class="field">
+                    <label>總金額</label>
+                    <input type="text" name="total">
+                </div>			
+                <div class="field">
+                    <label>下訂日期</label>
+                    <input type="text" name="orderDate">
+                </div>
+            </div>
+            <div class="four fields">
+                <div class="field">
+                    <label>客戶姓名</label>
+                    <input type="text" name="name">
+                </div>
+				<div class="field">
+					<label>手機號碼</label>
+					<input type="text" name="phone" placeholder="987654321">
 				</div>
 				<div class="field">
-					<label>總金額</label>
-					<input type="text" name="total">
-				</div>				
-				<div class="field">
-					<label>下訂日期</label>
-					<input type="text" name="orderDate">
+					<label>住址</label>
+					<input type="text" name="address" placeholder="台南市東區青年路297號2樓">
 				</div>
-				<div class="field">
-					<label>客戶姓名</label>
-					<input type="text" name="name">
-				</div>
-				<div class="field">
-					<label>下定產品種類</label>
-					<div class="ui icon input">
-						<input type="number" name="kind" placeholder="選擇數量">
-						<i class="circular cart plus link icon"></i>
-					</div>
-				</div>				
-	            <div id="test"></div>       		                							
-				<button class="ui button primary" type="submit">Submit</button>
-                <input type="hidden" name="query_cond" value="insert">
-			</form>
-		</div>		
-	</div>
-	
-	
+                <div class="field">
+                    <label>下定產品種類</label>
+                    <div class="ui icon input">
+                        <input type="number" name="kind" placeholder="選擇數量">
+                        <i class="circular cart plus link icon"></i>
+                    </div>
+                </div>                	                
+            </div>
+            <div id="test"></div> 		                							
+            <button class="ui button primary" type="submit" style="float: right; width: 15%;">確認</button>
+            <button class="ui button" type="submit" style="float: right; width: 15%;">刪除</button>            
+            <input type="hidden" name="query_cond" value="insert">
+        </form>
+    </div>
 	
 </body>
 <script>
     $(document).ready(function(){	
+        $('form').css('display', 'block')
 		$('body').on('click', '.edit', function(){
 			popForm()
             let OID = $(this).attr('editOID')            

@@ -43,3 +43,11 @@ button {
     z-index:1;
     display:none;  
 }
+
+#order_detail_form{
+    padding: 20px;
+    background-color:#FFFFFF;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 75%;
+}
